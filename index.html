@@ -25,6 +25,7 @@
             background-size: 400% 400%;
             animation: gradientChange 10s ease infinite; /* 背景渐变 */
             padding: 0 10px; /* 防止在小屏时内容溢出 */
+            text-align: center;
         }
 
         h1 {
@@ -34,18 +35,6 @@
             animation: textAnimate 5s infinite alternate;
             animation-delay: 1s;
             z-index: 2; /* 确保标题显示在最前 */
-        }
-
-        #animationBox {
-            width: 220px;
-            height: 220px;
-            margin-top: 20px;
-            background-color: #61dafb;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            display: block;
-            animation: colorChange 5s infinite alternate;
-            z-index: 1; /* 让动画框放在标题下方 */
         }
 
         @keyframes textAnimate {
@@ -60,24 +49,6 @@
             100% {
                 opacity: 0;
                 transform: translateY(50px);
-            }
-        }
-
-        @keyframes colorChange {
-            0% {
-                background-color: #ff6347;
-            }
-            25% {
-                background-color: #1e90ff;
-            }
-            50% {
-                background-color: #32cd32;
-            }
-            75% {
-                background-color: #ff4500;
-            }
-            100% {
-                background-color: #ff1493;
             }
         }
 
@@ -107,7 +78,6 @@
     <div id="particles-js"></div>
     <div class="container">
         <h1>欢迎来到超级炫酷网页!</h1>
-        <div id="animationBox"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
