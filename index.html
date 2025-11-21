@@ -106,7 +106,7 @@
         particlesJS("particles-js", {
             particles: {
                 number: {
-                    value: 100,  // 增加粒子数量至100
+                    value: 100,  // 设置适中的粒子数量
                     density: {
                         enable: true,
                         value_area: 800
@@ -138,13 +138,13 @@
                     }
                 },
                 size: {
-                    value: 6,  // 设置粒子尺寸
+                    value: 6,  // 粒子尺寸适中
                     random: true,
                     anim: {
-                        enable: true,
-                        speed: 2,
-                        size_min: 0.1,
-                        sync: false
+                        enable: true,    // 启用粒子大小变化
+                        speed: 3,        // 大小变化速度
+                        size_min: 2,     // 最小粒子大小
+                        sync: false      // 每个粒子大小变化不同步
                     }
                 },
                 line_linked: {
