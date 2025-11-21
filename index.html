@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>超炫酷动态网站</title>
+    <title>粒子风暴 · 极致炫酷</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,6 @@
             width: 100%;
             height: 100%;
             z-index: 1;
-            /* 增加3D透视感 */
             transform-style: preserve-3d;
         }
 
@@ -39,47 +38,46 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            /* 增加景深 */
             perspective: 1000px;
         }
 
         .content h1 {
-            font-size: 4rem;
+            font-size: 4.5rem;
             margin-bottom: 1rem;
-            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
-            background-size: 300% 300%;
+            background: linear-gradient(45deg, #ff00cc, #3333ff, #00ffff);
+            background-size: 400% 400%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: gradientShift 4s ease infinite, scanLight 3s linear infinite;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            animation: gradientShift 5s ease infinite, scanLight 4s linear infinite;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         .content p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            max-width: 800px;
             line-height: 1.8;
             opacity: 0.9;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
         }
 
         .cta-button {
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, #ff0080, #8000ff);
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            background: linear-gradient(45deg, #ff3366, #3366ff);
             color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 60px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 0, 128, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 51, 102, 0.6);
             font-weight: bold;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
 
         .cta-button:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 40px rgba(128, 0, 255, 0.7);
+            transform: translateY(-6px) scale(1.08);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 60px rgba(51, 102, 255, 0.8);
         }
 
         @keyframes gradientShift {
@@ -89,20 +87,20 @@
         }
 
         @keyframes scanLight {
-            0% { background-position: -500px 0; }
-            100% { background-position: 500px 0; }
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
         }
 
         @media (max-width: 768px) {
             .content h1 {
-                font-size: 2.8rem;
+                font-size: 3rem;
             }
             .content p {
                 font-size: 1.1rem;
             }
             .cta-button {
-                padding: 12px 30px;
-                font-size: 1rem;
+                padding: 14px 35px;
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -111,97 +109,92 @@
     <div id="particles-js"></div>
 
     <div class="content">
-        <h1>欢迎来到未来世界</h1>
-        <p>沉浸式动态视觉体验，感受科技与美学的碰撞。</p>
-        <button class="cta-button">立即体验</button>
+        <h1>粒子风暴 · 追踪启动</h1>
+        <p>鼠标移动时，粒子将被引力吸引；点击屏幕，触发宇宙级爆炸特效！</p>
+        <button class="cta-button">引爆粒子</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- 使用增强版 particles.js 配置 -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.4.0/particles.min.js"></script>
     <script>
-        // 动态变色背景
-        function updateBackgroundColor() {
-            const now = Date.now();
-            const hue = (now / 50) % 360; // 颜色随时间变化
-            document.body.style.background = `hsl(${hue}, 80%, 10%)`;
-            requestAnimationFrame(updateBackgroundColor);
-        }
-        updateBackgroundColor();
-
-        // 粒子配置增强版
         document.addEventListener('DOMContentLoaded', function() {
-            particlesJS('particles-js', {
+            // 动态变色背景
+            function updateBg() {
+                const h = (Date.now() / 30) % 360;
+                document.body.style.background = `hsl(${h}, 70%, 5%)`;
+                requestAnimationFrame(updateBg);
+            }
+            updateBg();
+
+            // 粒子配置：极致追踪 + 爆炸效果
+            window.particlesJS('particles-js', {
                 "particles": {
                     "number": {
-                        "value": 120,
+                        "value": 150,
                         "density": {
                             "enable": true,
                             "value_area": 800
                         }
                     },
                     "color": {
-                        "value": "#ffffff"
-                    },
-                    "shape": {
-                        "type": "circle",
-                        "stroke": {
-                            "width": 0,
-                            "color": "#000000"
+                        "value": function() {
+                            // 动态颜色：HSL 随时间变化
+                            const h = (Date.now() / 50) % 360;
+                            return `hsl(${h}, 100%, 70%)`;
                         }
                     },
+                    "shape": {
+                        "type": "circle"
+                    },
                     "opacity": {
-                        "value": 0.6,
+                        "value": 0.8,
                         "random": true,
                         "anim": {
                             "enable": true,
-                            "speed": 1.5,
+                            "speed": 2,
                             "opacity_min": 0.1,
                             "sync": false
                         }
                     },
                     "size": {
-                        "value": 4,
+                        "value": 5,
                         "random": true,
                         "anim": {
                             "enable": true,
-                            "speed": 3,
+                            "speed": 5,
                             "size_min": 0.1,
                             "sync": false
                         }
                     },
                     "line_linked": {
                         "enable": true,
-                        "distance": 180,
-                        "color": {
-                            "value": "#ffffff",
-                            "animation": {
-                                "enable": true,
-                                "speed": 2,
-                                "opacity_min": 0.1,
-                                "sync": true
-                            }
-                        },
-                        "opacity": 0.3,
-                        "width": 1.5
+                        "distance": 200,
+                        "color": "#ffffff",
+                        "opacity": 0.4,
+                        "width": 2,
+                        "shadow": {
+                            "enable": true,
+                            "color": "#ffffff",
+                            "blur": 10
+                        }
                     },
                     "move": {
                         "enable": true,
-                        "speed": 3,
+                        "speed": 4,
                         "direction": "none",
                         "random": true,
                         "straight": false,
-                        "out_mode": "out",
+                        "out_mode": "bounce",
                         "bounce": false,
                         "attract": {
                             "enable": true,
-                            "rotateX": 800,
-                            "rotateY": 1400
+                            "rotateX": 3000,
+                            "rotateY": 3000
                         },
-                        "trail": { // 拖尾效果
+                        "trail": {
                             "enable": true,
-                            "length": 20,
-                            "fill": {
-                                "color": "#000"
-                            }
+                            "length": 30,
+                            "fill": { "color": "#000" }
                         }
                     }
                 },
@@ -210,7 +203,7 @@
                     "events": {
                         "onhover": {
                             "enable": true,
-                            "mode": ["grab", "bubble", "repulse"]
+                            "mode": "grab"
                         },
                         "onclick": {
                             "enable": true,
@@ -220,13 +213,13 @@
                     },
                     "modes": {
                         "grab": {
-                            "distance": 200,
+                            "distance": 250,
                             "line_linked": {
-                                "opacity": 0.8
+                                "opacity": 0.9
                             }
                         },
                         "bubble": {
-                            "distance": 250,
+                            "distance": 400,
                             "size": 60,
                             "duration": 2,
                             "opacity": 0.8,
@@ -237,14 +230,24 @@
                             "duration": 0.8
                         },
                         "push": {
-                            "particles_nb": 6
+                            "particles_nb": 8
                         },
                         "remove": {
-                            "particles_nb": 3
+                            "particles_nb": 4
                         }
                     }
                 },
                 "retina_detect": true
+            });
+
+            // 点击时添加闪光效果
+            const canvas = document.querySelector('#particles-js canvas');
+            canvas.addEventListener('click', function(e) {
+                document.body.style.transition = 'background 0.1s';
+                document.body.style.background = '#fff';
+                setTimeout(() => {
+                    document.body.style.background = '';
+                }, 100);
             });
         });
     </script>
