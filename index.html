@@ -106,55 +106,47 @@
         particlesJS("particles-js", {
             particles: {
                 number: {
-                    value: 150,  // 设置适中的粒子数量
+                    value: 100,  // 设置适中的粒子数量
                     density: {
                         enable: true,
                         value_area: 800
                     }
                 },
                 color: {
-                    value: "#ffffff",  // 粒子初始颜色
-                    animation: {
-                        enable: true,   // 启用粒子变色
-                        speed: 2,       // 变色速度
-                        sync: false     // 每个粒子变色不同步
-                    }
+                    value: "#ffffff",  // 粒子初始颜色设置为白色
                 },
                 shape: {
-                    type: "circle",
+                    type: "circle",  // 粒子为圆形
                     stroke: {
                         width: 0,
                         color: "#000000"
                     }
                 },
                 opacity: {
-                    value: 0.5,
+                    value: 0.5,  // 设置固定的透明度
                     random: true,
                     anim: {
-                        enable: false,  // 关闭透明度变化
+                        enable: false,  // 不启用透明度动画
                     }
                 },
                 size: {
-                    value: 6,  // 粒子尺寸适中
-                    random: true,
-                    anim: {
-                        enable: false,    // 不再启用大小变化
-                    }
+                    value: 6,  // 粒子大小固定为 6
+                    random: false,  // 不启用粒子大小变化
                 },
                 line_linked: {
                     enable: true,
                     distance: 150,
-                    color: "#ffffff",
+                    color: "#ffffff",  // 连线颜色为白色
                     opacity: 0.4,
                     width: 1
                 },
                 move: {
                     enable: true,
-                    speed: 3,  // 适中的粒子移动速度
-                    direction: "none",
-                    random: true,
+                    speed: 3,  // 设置适中的粒子移动速度
+                    direction: "none",  // 粒子移动方向为随机
+                    random: true,  // 粒子随机移动
                     straight: false,
-                    out_mode: "out",
+                    out_mode: "out",  // 粒子从屏幕外消失
                     bounce: false
                 }
             },
@@ -162,11 +154,11 @@
                 events: {
                     onhover: {
                         enable: true,
-                        mode: "repulse"
+                        mode: "repulse"  // 鼠标悬停时粒子反弹
                     },
                     onclick: {
                         enable: true,
-                        mode: "push"
+                        mode: "push"  // 点击时新增粒子
                     }
                 }
             },
