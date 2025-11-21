@@ -106,14 +106,19 @@
         particlesJS("particles-js", {
             particles: {
                 number: {
-                    value: 200,  // 增加粒子数量
+                    value: 50,  // 减少粒子数量
                     density: {
                         enable: true,
                         value_area: 800
                     }
                 },
                 color: {
-                    value: "#ffffff"  // 粒子初始颜色
+                    value: "#ffffff",  // 粒子初始颜色
+                    animation: {
+                        enable: true,   // 启用粒子变色
+                        speed: 5,       // 变色速度
+                        sync: false     // 每个粒子变色不同步
+                    }
                 },
                 shape: {
                     type: "circle",
@@ -137,7 +142,7 @@
                     random: true,
                     anim: {
                         enable: true,
-                        speed: 5,
+                        speed: 2,
                         size_min: 0.1,
                         sync: false
                     }
@@ -151,7 +156,7 @@
                 },
                 move: {
                     enable: true,
-                    speed: 6,  // 增加粒子移动速度
+                    speed: 1,  // 减慢粒子的移动速度
                     direction: "none",
                     random: true,
                     straight: false,
@@ -160,11 +165,11 @@
                 },
                 shadow: {
                     enable: true,  // 启用粒子阴影
-                    color: "#ffffff",  // 阴影颜色
-                    blur: 5,  // 阴影模糊半径（减小阴影的大小）
+                    color: "#fff",  // 阴影颜色
+                    blur: 3,  // 阴影模糊半径
                     offset: {
-                        x: 1,
-                        y: 1
+                        x: 2,
+                        y: 2
                     }
                 }
             },
