@@ -37,6 +37,7 @@
             background: linear-gradient(45deg, #ff6347, #1e90ff, #32cd32);
             background-size: 400% 400%;
             animation: gradientChange 10s ease infinite;
+            background-color: #000; /* 设置一个基础背景色 */
 
             /* 整个页面应用玻璃拟态 */
             backdrop-filter: blur(15px); /* 背景模糊 */
@@ -52,6 +53,32 @@
             animation: textAnimate 5s infinite alternate;
             animation-delay: 1s;
             z-index: 2; /* 确保标题显示在最前 */
+            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8); /* 为标题添加光泽效果 */
+        }
+
+        /* 玻璃拟态效果的内容容器 */
+        .container {
+            background: rgba(255, 255, 255, 0.15); /* 半透明背景 */
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px); /* 背景模糊 */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* 边框 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 阴影 */
+            z-index: 2; /* 内容在最前 */
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* 动态渐变背景 */
+        @keyframes gradientChange {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         @keyframes textAnimate {
@@ -66,18 +93,6 @@
             100% {
                 opacity: 0;
                 transform: translateY(50px);
-            }
-        }
-
-        @keyframes gradientChange {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
             }
         }
     </style>
