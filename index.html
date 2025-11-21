@@ -33,15 +33,14 @@
             flex-direction: column;
             text-align: center;
 
-            /* 玻璃拟态效果 */
+            /* 背景渐变色 */
             background: linear-gradient(45deg, #ff6347, #1e90ff, #32cd32);
             background-size: 400% 400%;
             animation: gradientChange 10s ease infinite;
-            background-color: #000; /* 设置一个基础背景色 */
 
-            /* 确保整个页面应用玻璃拟态 */
+            /* 玻璃拟态效果 */
             backdrop-filter: blur(15px); /* 背景模糊 */
-            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            background-color: rgba(255, 255, 255, 0.1); /* 半透明背景 */
             padding: 20px; /* 页面边缘留白 */
             -webkit-backdrop-filter: blur(15px); /* 兼容Safari */
         }
