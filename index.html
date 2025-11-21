@@ -11,7 +11,6 @@
             box-sizing: border-box;
         }
 
-        /* 适配移动设备 */
         body {
             font-family: Arial, sans-serif;
             height: 100vh;
@@ -29,26 +28,9 @@
         h1 {
             font-size: 3em;
             margin-bottom: 20px;
-            animation: textAnimate 3s ease-in-out infinite;
             opacity: 0;
+            animation: textAnimate 5s infinite alternate;
             animation-delay: 1s;
-        }
-
-        #coolButton {
-            padding: 12px 25px;
-            font-size: 1.6em;
-            background-color: #61dafb;
-            border: none;
-            color: #282c34;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: buttonBounce 1s infinite alternate;
-        }
-
-        #coolButton:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
         }
 
         #animationBox {
@@ -60,8 +42,10 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             display: none;
             transition: transform 0.5s ease-in-out;
+            animation: colorChange 5s infinite alternate;
         }
 
+        /* 文本动画效果 */
         @keyframes textAnimate {
             0% {
                 opacity: 0;
@@ -77,24 +61,41 @@
             }
         }
 
-        @keyframes buttonBounce {
+        /* 随机颜色变化动画 */
+        @keyframes colorChange {
             0% {
-                transform: translateY(0);
+                background-color: #ff6347;
+            }
+            25% {
+                background-color: #1e90ff;
+            }
+            50% {
+                background-color: #32cd32;
+            }
+            75% {
+                background-color: #ff4500;
             }
             100% {
-                transform: translateY(-10px);
+                background-color: #ff1493;
             }
         }
 
-        @keyframes gradientChange {
+        /* 随机字体颜色变化 */
+        @keyframes textColorChange {
             0% {
-                background-position: 0% 50%;
+                color: #ff6347;
+            }
+            25% {
+                color: #1e90ff;
             }
             50% {
-                background-position: 100% 50%;
+                color: #32cd32;
+            }
+            75% {
+                color: #ff4500;
             }
             100% {
-                background-position: 0% 50%;
+                color: #ff1493;
             }
         }
 
@@ -106,14 +107,12 @@
             height: 100%;
             z-index: -1; /* 粒子背景放在最底层 */
         }
-
     </style>
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="container">
         <h1>欢迎来到超级炫酷网页!</h1>
-        <button id="coolButton">点击我</button>
         <div id="animationBox"></div>
     </div>
 
@@ -194,17 +193,34 @@
         // 页面加载时文字逐步显示
         window.onload = function () {
             document.querySelector("h1").style.animationPlayState = "running";
+            setInterval(changeRandomColors, 1000);  // 每秒更换颜色
         };
 
-        // 点击按钮显示动画框
-        document.getElementById("coolButton").addEventListener("click", function() {
-            const box = document.getElementById("animationBox");
-            box.style.display = "block";
-            box.style.transform = "rotate(360deg)";
-            setTimeout(() => {
-                box.style.transform = "rotate(0deg)";
-            }, 500);
-        });
+        // 随机改变颜色的函数
+        function changeRandomColors() {
+            // 随机设置 h1 字体颜色
+            const h1 = document.querySelector('h1');
+            h1.style.animation = 'textColorChange 5s infinite alternate';
+
+            // 随机设置动画框颜色
+            const animationBox = document.getElementById("animationBox");
+            animationBox.style.display = "block";
+            animationBox.style.animation = 'colorChange 5s infinite alternate';
+
+            // 随机设置粒子背景颜色
+            const particles = document.querySelector('#particles-js');
+            particles.style.backgroundColor = getRandomColor();
+        }
+
+        // 生成随机颜色
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
     </script>
 </body>
 </html>
