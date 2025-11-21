@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>炫酷网页</title>
+    <title>超级炫酷网页</title>
     <style>
         * {
             margin: 0;
@@ -15,69 +15,86 @@
             font-family: Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
-            background-color: #282c34;
+            background: linear-gradient(45deg, #ff6347, #1e90ff, #32cd32);
+            background-size: 400% 400%;
+            animation: gradientChange 10s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
             color: white;
             position: relative;
+            flex-direction: column;
         }
 
         h1 {
             font-size: 3em;
             margin-bottom: 20px;
-            animation: colorChange 3s infinite;
+            animation: textAnimate 3s ease-in-out infinite;
+            opacity: 0;
+            animation-delay: 1s;
         }
 
         #coolButton {
-            padding: 10px 20px;
-            font-size: 1.5em;
+            padding: 12px 25px;
+            font-size: 1.6em;
             background-color: #61dafb;
             border: none;
             color: #282c34;
             cursor: pointer;
-            border-radius: 5px;
-            transition: transform 0.3s ease;
-            animation: colorChange 3s infinite;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: buttonBounce 1s infinite alternate;
         }
 
         #coolButton:hover {
-            transform: scale(1.1);
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
         }
 
         #animationBox {
-            width: 200px;
-            height: 200px;
+            width: 220px;
+            height: 220px;
             margin-top: 20px;
             background-color: #61dafb;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             display: none;
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease-in-out;
         }
 
-        @keyframes colorChange {
+        @keyframes textAnimate {
             0% {
-                color: #ff6347;
+                opacity: 0;
+                transform: translateY(-50px);
             }
             50% {
-                color: #32cd32;
+                opacity: 1;
+                transform: translateY(0);
             }
             100% {
-                color: #1e90ff;
+                opacity: 0;
+                transform: translateY(50px);
             }
         }
 
-        @keyframes backgroundColorChange {
+        @keyframes buttonBounce {
             0% {
-                background-color: #282c34;
-            }
-            50% {
-                background-color: #ff6347;
+                transform: translateY(0);
             }
             100% {
-                background-color: #1e90ff;
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes gradientChange {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
             }
         }
 
@@ -89,13 +106,12 @@
             height: 100%;
             z-index: -1;
         }
-
     </style>
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="container">
-        <h1>欢迎来到炫酷网页!</h1>
+        <h1>欢迎来到超级炫酷网页!</h1>
         <button id="coolButton">点击我</button>
         <div id="animationBox"></div>
     </div>
@@ -106,7 +122,7 @@
         particlesJS("particles-js", {
             particles: {
                 number: {
-                    value: 100,
+                    value: 150,
                     density: {
                         enable: true,
                         value_area: 800
@@ -133,7 +149,7 @@
                     }
                 },
                 size: {
-                    value: 3,
+                    value: 4,
                     random: true,
                     anim: {
                         enable: true,
@@ -173,6 +189,11 @@
             },
             retina_detect: true
         });
+
+        // 页面加载时文字逐步显示
+        window.onload = function () {
+            document.querySelector("h1").style.animationPlayState = "running";
+        };
 
         // 点击按钮显示动画框
         document.getElementById("coolButton").addEventListener("click", function() {
