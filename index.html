@@ -106,7 +106,7 @@
         particlesJS("particles-js", {
             particles: {
                 number: {
-                    value: 100,  // 为了提升手机性能，减少粒子数量
+                    value: 200,  // 增加粒子数量
                     density: {
                         enable: true,
                         value_area: 800
@@ -151,7 +151,7 @@
                 },
                 move: {
                     enable: true,
-                    speed: 2,  // 降低移动速度，以提高手机端性能
+                    speed: 6,  // 增加粒子移动速度
                     direction: "none",
                     random: true,
                     straight: false,
@@ -160,11 +160,11 @@
                 },
                 shadow: {
                     enable: true,  // 启用粒子阴影
-                    color: "#fff",  // 阴影颜色
-                    blur: 10,  // 阴影模糊
+                    color: "#ffffff",  // 阴影颜色
+                    blur: 5,  // 阴影模糊半径（减小阴影的大小）
                     offset: {
-                        x: 2,
-                        y: 2
+                        x: 1,
+                        y: 1
                     }
                 }
             },
