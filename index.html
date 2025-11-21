@@ -1,255 +1,165 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>粒子风暴 · 极致炫酷</title>
+    <title>原生粒子 · 鼠标引力风暴</title>
     <style>
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Arial', sans-serif;
             background: #000;
-            color: white;
-        }
-
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            transform-style: preserve-3d;
-        }
-
-        .content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 2rem;
+            overflow: hidden;
+            width: 100vw;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            perspective: 1000px;
+            cursor: none; /* 隐藏默认光标，用粒子当光标 */
         }
-
-        .content h1 {
-            font-size: 4.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #ff00cc, #3333ff, #00ffff);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientShift 5s ease infinite, scanLight 4s linear infinite;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        canvas {
+            display: block;
         }
-
-        .content p {
-            font-size: 1.4rem;
-            margin-bottom: 2.5rem;
-            max-width: 800px;
-            line-height: 1.8;
-            opacity: 0.9;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-        }
-
-        .cta-button {
-            padding: 18px 45px;
-            font-size: 1.3rem;
-            background: linear-gradient(45deg, #ff3366, #3366ff);
-            color: white;
-            border: none;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 51, 102, 0.6);
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-6px) scale(1.08);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 60px rgba(51, 102, 255, 0.8);
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes scanLight {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        @media (max-width: 768px) {
-            .content h1 {
-                font-size: 3rem;
-            }
-            .content p {
-                font-size: 1.1rem;
-            }
-            .cta-button {
-                padding: 14px 35px;
-                font-size: 1.1rem;
-            }
+        .info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(0, 255, 255, 0.7);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <div id="particles-js"></div>
 
-    <div class="content">
-        <h1>粒子风暴 · 追踪启动</h1>
-        <p>鼠标移动时，粒子将被引力吸引；点击屏幕，触发宇宙级爆炸特效！</p>
-        <button class="cta-button">引爆粒子</button>
-    </div>
+<canvas id="particleCanvas"></canvas>
+<div class="info">移动鼠标，粒子会追着你跑！点击触发爆炸 💥</div>
 
-    <!-- 使用增强版 particles.js 配置 -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.4.0/particles.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 动态变色背景
-            function updateBg() {
-                const h = (Date.now() / 30) % 360;
-                document.body.style.background = `hsl(${h}, 70%, 5%)`;
-                requestAnimationFrame(updateBg);
+<script>
+    // ========== 核心：原生粒子系统 ==========
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 全屏适配
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // 鼠标位置
+    let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+
+    // 跟踪上次点击时间，防止爆炸太频繁
+    let lastClick = 0;
+
+    // 粒子数组
+    const particles = [];
+    const particleCount = 150;
+
+    // 创建粒子
+    function createParticles() {
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 5 + 1,
+                speedX: Math.random() * 2 - 1,
+                speedY: Math.random() * 2 - 1,
+                color: `hsl(${Math.random() * 360}, 80%, 60%)`,
+                life: 1.0
+            });
+        }
+    }
+
+    // 更新粒子
+    function updateParticles() {
+        // 清空画布
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 更新每个粒子
+        particles.forEach(p => {
+            // 向鼠标移动
+            const dx = mouse.x - p.x;
+            const dy = mouse.y - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 200) {
+                p.speedX += dx / dist * 0.15;
+                p.speedY += dy / dist * 0.15;
             }
-            updateBg();
 
-            // 粒子配置：极致追踪 + 爆炸效果
-            window.particlesJS('particles-js', {
-                "particles": {
-                    "number": {
-                        "value": 150,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
-                    },
-                    "color": {
-                        "value": function() {
-                            // 动态颜色：HSL 随时间变化
-                            const h = (Date.now() / 50) % 360;
-                            return `hsl(${h}, 100%, 70%)`;
-                        }
-                    },
-                    "shape": {
-                        "type": "circle"
-                    },
-                    "opacity": {
-                        "value": 0.8,
-                        "random": true,
-                        "anim": {
-                            "enable": true,
-                            "speed": 2,
-                            "opacity_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "size": {
-                        "value": 5,
-                        "random": true,
-                        "anim": {
-                            "enable": true,
-                            "speed": 5,
-                            "size_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 200,
-                        "color": "#ffffff",
-                        "opacity": 0.4,
-                        "width": 2,
-                        "shadow": {
-                            "enable": true,
-                            "color": "#ffffff",
-                            "blur": 10
-                        }
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 4,
-                        "direction": "none",
-                        "random": true,
-                        "straight": false,
-                        "out_mode": "bounce",
-                        "bounce": false,
-                        "attract": {
-                            "enable": true,
-                            "rotateX": 3000,
-                            "rotateY": 3000
-                        },
-                        "trail": {
-                            "enable": true,
-                            "length": 30,
-                            "fill": { "color": "#000" }
-                        }
-                    }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": {
-                            "enable": true,
-                            "mode": "grab"
-                        },
-                        "onclick": {
-                            "enable": true,
-                            "mode": ["push", "remove", "bubble"]
-                        },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": {
-                            "distance": 250,
-                            "line_linked": {
-                                "opacity": 0.9
-                            }
-                        },
-                        "bubble": {
-                            "distance": 400,
-                            "size": 60,
-                            "duration": 2,
-                            "opacity": 0.8,
-                            "speed": 3
-                        },
-                        "repulse": {
-                            "distance": 200,
-                            "duration": 0.8
-                        },
-                        "push": {
-                            "particles_nb": 8
-                        },
-                        "remove": {
-                            "particles_nb": 4
-                        }
-                    }
-                },
-                "retina_detect": true
-            });
+            // 添加轻微阻力
+            p.speedX *= 0.95;
+            p.speedY *= 0.95;
 
-            // 点击时添加闪光效果
-            const canvas = document.querySelector('#particles-js canvas');
-            canvas.addEventListener('click', function(e) {
-                document.body.style.transition = 'background 0.1s';
-                document.body.style.background = '#fff';
-                setTimeout(() => {
-                    document.body.style.background = '';
-                }, 100);
-            });
+            // 更新位置
+            p.x += p.speedX;
+            p.y += p.speedY;
+
+            // 边界反弹
+            if (p.x < 0 || p.x > canvas.width) p.speedX *= -0.8;
+            if (p.y < 0 || p.y > canvas.height) p.speedY *= -0.8;
+
+            // 绘制粒子
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.life;
+            ctx.fill();
+            ctx.globalAlpha = 1;
         });
-    </script>
+
+        // 绘制连线（近的粒子连起来）
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 * (1 - distance / 100)})`;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        requestAnimationFrame(updateParticles);
+    }
+
+    // 鼠标移动事件 —— 这里一定能读到！
+    canvas.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+
+    // 点击爆炸效果
+    canvas.addEventListener('click', (e) => {
+        const now = Date.now();
+        if (now - lastClick < 500) return; // 防抖
+        lastClick = now;
+
+        particles.forEach(p => {
+            const dx = e.clientX - p.x;
+            const dy = e.clientY - p.y;
+            const angle = Math.atan2(dy, dx);
+            const force = 10;
+            p.speedX += Math.cos(angle) * force;
+            p.speedY += Math.sin(angle) * force;
+        });
+
+        // 闪光
+        document.body.style.background = '#fff';
+        setTimeout(() => {
+            document.body.style.background = '#000';
+        }, 100);
+    });
+
+    // 窗口调整
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    // 初始化
+    createParticles();
+    updateParticles();
+</script>
+
 </body>
 </html>
