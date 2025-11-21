@@ -31,11 +31,12 @@
             color: white;
             position: relative;
             flex-direction: column;
-            background: linear-gradient(45deg, #ff6347, #1e90ff, #32cd32);
-            background-size: 400% 400%;
-            animation: gradientChange 10s ease infinite; /* 背景渐变 */
-            padding: 0 10px; /* 防止在小屏时内容溢出 */
             text-align: center;
+            
+            /* 玻璃拟态效果 */
+            backdrop-filter: blur(15px); /* 背景模糊 */
+            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            padding: 20px; /* 页面边缘留白 */
             background-color: #000; /* 设置一个基础背景色 */
         }
 
@@ -50,9 +51,9 @@
 
         /* 玻璃拟态效果的内容容器 */
         .container {
-            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            background: rgba(255, 255, 255, 0.15); /* 半透明背景 */
             border-radius: 15px;
-            padding: 20px;
+            padding: 30px;
             backdrop-filter: blur(10px); /* 背景模糊 */
             border: 1px solid rgba(255, 255, 255, 0.2); /* 边框 */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 阴影 */
