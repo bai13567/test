@@ -37,6 +37,17 @@
             z-index: 2; /* 确保标题显示在最前 */
         }
 
+        /* 玻璃拟态效果 */
+        .container {
+            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px); /* 模糊效果 */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* 增加边框 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 柔和阴影 */
+            z-index: 2; /* 让内容在粒子背景之上 */
+        }
+
         @keyframes textAnimate {
             0% {
                 opacity: 0;
