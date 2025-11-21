@@ -11,6 +11,16 @@
             box-sizing: border-box;
         }
 
+        /* 背景粒子效果 */
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* 粒子背景放在最底层 */
+        }
+
         body {
             font-family: Arial, sans-serif;
             height: 100vh;
@@ -26,6 +36,11 @@
             animation: gradientChange 10s ease infinite; /* 背景渐变 */
             padding: 0 10px; /* 防止在小屏时内容溢出 */
             text-align: center;
+
+            /* 整个页面添加玻璃拟态效果 */
+            backdrop-filter: blur(10px); /* 背景模糊 */
+            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            z-index: 1; /* 确保内容在粒子上面 */
         }
 
         h1 {
@@ -37,15 +52,15 @@
             z-index: 2; /* 确保标题显示在最前 */
         }
 
-        /* 玻璃拟态效果 */
+        /* 玻璃拟态效果的内容容器 */
         .container {
-            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            background: rgba(255, 255, 255, 0.2); /* 半透明 */
             border-radius: 15px;
             padding: 20px;
-            backdrop-filter: blur(10px); /* 模糊效果 */
-            border: 1px solid rgba(255, 255, 255, 0.2); /* 增加边框 */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 柔和阴影 */
-            z-index: 2; /* 让内容在粒子背景之上 */
+            backdrop-filter: blur(10px); /* 背景模糊 */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* 边框 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 阴影 */
+            z-index: 2; /* 内容在最前 */
         }
 
         @keyframes textAnimate {
@@ -75,14 +90,6 @@
             }
         }
 
-        #particles-js {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0; /* 粒子背景放在最底层 */
-        }
     </style>
 </head>
 <body>
