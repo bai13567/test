@@ -68,19 +68,6 @@
             transition: all 0.3s ease-in-out;
         }
 
-        /* 动态渐变背景 */
-        @keyframes gradientChange {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
         @keyframes textAnimate {
             0% {
                 opacity: 0;
@@ -93,6 +80,18 @@
             100% {
                 opacity: 0;
                 transform: translateY(50px);
+            }
+        }
+
+        @keyframes gradientChange {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
             }
         }
     </style>
@@ -114,7 +113,7 @@
                     }
                 },
                 color: {
-                    value: "#ffffff"
+                    value: "#ffffff"  // 粒子初始颜色
                 },
                 shape: {
                     type: "circle",
@@ -158,6 +157,15 @@
                     straight: false,
                     out_mode: "out",
                     bounce: false
+                },
+                shadow: {
+                    enable: true,  // 启用粒子阴影
+                    color: "#fff",  // 阴影颜色
+                    blur: 10,  // 阴影模糊
+                    offset: {
+                        x: 2,
+                        y: 2
+                    }
                 }
             },
             interactivity: {
