@@ -36,11 +36,7 @@
             animation: gradientChange 10s ease infinite; /* 背景渐变 */
             padding: 0 10px; /* 防止在小屏时内容溢出 */
             text-align: center;
-
-            /* 整个页面添加玻璃拟态效果 */
-            backdrop-filter: blur(10px); /* 背景模糊 */
-            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
-            z-index: 1; /* 确保内容在粒子上面 */
+            background-color: #000; /* 设置一个基础背景色 */
         }
 
         h1 {
@@ -54,7 +50,7 @@
 
         /* 玻璃拟态效果的内容容器 */
         .container {
-            background: rgba(255, 255, 255, 0.2); /* 半透明 */
+            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
             border-radius: 15px;
             padding: 20px;
             backdrop-filter: blur(10px); /* 背景模糊 */
@@ -89,7 +85,6 @@
                 background-position: 0% 50%;
             }
         }
-
     </style>
 </head>
 <body>
