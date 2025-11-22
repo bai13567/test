@@ -1,293 +1,1637 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>超级炫酷动态页面</title>
+    <meta charset="UTF-8" />
+    <title>宇宙超级无敌炫酷动态 · satx 专属宇宙</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===========================
+         GLOBAL RESET & BASE STYLE
+    ============================ -->
     <style>
-        /* 通用样式 */
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Arial', sans-serif;
+            box-sizing: border-box;
         }
 
-        /* 背景设置 */
-        .background {
-            position: absolute;
-            top: 0;
-            left: 0;
+        html,
+        body {
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, #0a0a0a, #000000);
-            animation: gradient 20s ease-in-out infinite;
-            z-index: -1;
+            overflow: hidden;
+            background: #050510;
+            color: #eee;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC",
+                "Microsoft YaHei", sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        @keyframes gradient {
+        body {
+            /* 多层渐变背景基础色 */
+            background:
+                radial-gradient(circle at 0% 0%, rgba(255, 0, 120, 0.35), transparent 60%),
+                radial-gradient(circle at 100% 0%, rgba(0, 200, 255, 0.35), transparent 55%),
+                radial-gradient(circle at 0% 100%, rgba(0, 255, 140, 0.3), transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(160, 100, 255, 0.35), transparent 55%),
+                #050510;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        /* 用于承载所有层的主容器 */
+        #root {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        /* ===========================
+           LAYER SYSTEM (PARALLAX)
+        ============================ */
+
+        .layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .layer-0 {
+            z-index: 0;
+        }
+
+        .layer-1 {
+            z-index: 1;
+        }
+
+        .layer-2 {
+            z-index: 2;
+        }
+
+        .layer-3 {
+            z-index: 3;
+        }
+
+        .layer-4 {
+            z-index: 4;
+        }
+
+        .layer-5 {
+            z-index: 5;
+        }
+
+        /* 动态模糊星云层 */
+        .nebula {
+            position: absolute;
+            width: 160%;
+            height: 160%;
+            left: -30%;
+            top: -30%;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(255, 0, 153, 0.45), transparent 55%),
+                radial-gradient(circle at 90% 20%, rgba(0, 221, 255, 0.45), transparent 55%),
+                radial-gradient(circle at 20% 90%, rgba(0, 255, 153, 0.4), transparent 60%),
+                radial-gradient(circle at 80% 85%, rgba(170, 120, 255, 0.4), transparent 60%);
+            filter: blur(40px);
+            opacity: 0.65;
+            animation: nebulaDrift 48s linear infinite alternate;
+        }
+
+        @keyframes nebulaDrift {
             0% {
-                background: radial-gradient(circle, #0a0a0a, #000000);
+                transform: translate3d(-40px, -20px, 0) scale(1);
             }
-            25% {
-                background: radial-gradient(circle, #ff007f, #000000);
+            33% {
+                transform: translate3d(60px, 0px, 0) scale(1.1);
             }
-            50% {
-                background: radial-gradient(circle, #0000ff, #000000);
-            }
-            75% {
-                background: radial-gradient(circle, #ff007f, #000000);
+            66% {
+                transform: translate3d(-20px, 40px, 0) scale(1.08);
             }
             100% {
-                background: radial-gradient(circle, #0a0a0a, #000000);
+                transform: translate3d(40px, -40px, 0) scale(1.05);
             }
         }
 
-        /* 动态标题 */
-        .title {
-            color: #fff;
-            font-size: 5em;
-            text-align: center;
-            animation: fadeIn 3s ease-in-out;
+        /* ==================================
+           CENTER STAGE: TITLE & 3D ORBIT
+        =================================== */
+
+        .center-stage {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Arial', sans-serif;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            pointer-events: none;
         }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        .main-title {
+            font-size: 3.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            text-shadow:
+                0 0 8px rgba(255, 255, 255, 0.9),
+                0 0 16px rgba(255, 0, 200, 0.95),
+                0 0 36px rgba(0, 255, 255, 0.95);
+            animation: titleGlow 4s ease-in-out infinite;
+            white-space: nowrap;
         }
 
-        /* 粒子 */
-        .particle {
+        @keyframes titleGlow {
+            0% {
+                filter: blur(0px);
+                opacity: 0.85;
+                transform: translateY(0px) scale(1);
+            }
+            25% {
+                filter: blur(0.8px);
+                opacity: 1;
+                transform: translateY(-2px) scale(1.02);
+            }
+            50% {
+                filter: blur(1.4px);
+                opacity: 0.9;
+                transform: translateY(2px) scale(1.01);
+            }
+            75% {
+                filter: blur(0.4px);
+                opacity: 1;
+                transform: translateY(-1px) scale(1.04);
+            }
+            100% {
+                filter: blur(0px);
+                opacity: 0.92;
+                transform: translateY(0px) scale(1);
+            }
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            color: rgba(240, 240, 255, 0.85);
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            animation: subtitleFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes subtitleFloat {
+            0% {
+                transform: translateY(0px);
+                opacity: 0.65;
+            }
+            40% {
+                transform: translateY(-3px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(2px);
+                opacity: 0.75;
+            }
+        }
+
+        .orbital-system {
+            position: relative;
+            width: 420px;
+            height: 420px;
+            transform-style: preserve-3d;
+            animation: orbitTilt 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes orbitTilt {
+            0% {
+                transform: rotateX(18deg) rotateY(-18deg) rotateZ(0deg);
+            }
+            50% {
+                transform: rotateX(25deg) rotateY(26deg) rotateZ(45deg);
+            }
+            100% {
+                transform: rotateX(14deg) rotateY(-12deg) rotateZ(90deg);
+            }
+        }
+
+        .orbit-ring {
             position: absolute;
+            inset: 0;
             border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.7);
-            animation: moveParticle 8s infinite;
-        }
-
-        @keyframes moveParticle {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(300px, -300px); }
-            50% { transform: translate(600px, 0); }
-            75% { transform: translate(300px, 300px); }
-            100% { transform: translate(0, 0); }
-        }
-
-        /* 旋转3D圆环 */
-        .circle {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            border: 4px solid #fff;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: rotateCircle 15s linear infinite;
-        }
-
-        @keyframes rotateCircle {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        /* 3D立方体 */
-        .cube {
-            width: 200px;
-            height: 200px;
-            position: absolute;
-            top: 30%;
-            left: 30%;
-            animation: rotateCube 20s infinite linear;
+            border: 2px solid rgba(255, 255, 255, 0.14);
+            box-shadow:
+                0 0 12px rgba(0, 255, 255, 0.45),
+                0 0 24px rgba(255, 0, 255, 0.45);
             transform-style: preserve-3d;
         }
 
-        .cube div {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border: 1px solid #fff;
+        .orbit-ring.r1 {
+            animation: orbitSpin1 16s linear infinite;
+        }
+        .orbit-ring.r2 {
+            transform: scale(0.74);
+            animation: orbitSpin2 22s linear infinite reverse;
+        }
+        .orbit-ring.r3 {
+            transform: scale(0.46);
+            animation: orbitSpin3 28s linear infinite;
         }
 
-        .front  { transform: translateZ(100px); background: rgba(255, 0, 0, 0.5); }
-        .back   { transform: rotateY(180deg) translateZ(100px); background: rgba(0, 255, 0, 0.5); }
-        .left   { transform: rotateY(-90deg) translateZ(100px); background: rgba(0, 0, 255, 0.5); }
-        .right  { transform: rotateY(90deg) translateZ(100px); background: rgba(255, 255, 0, 0.5); }
-        .top    { transform: rotateX(90deg) translateZ(100px); background: rgba(255, 0, 255, 0.5); }
-        .bottom { transform: rotateX(-90deg) translateZ(100px); background: rgba(0, 255, 255, 0.5); }
-
-        @keyframes rotateCube {
-            0% { transform: rotateX(0deg) rotateY(0deg); }
-            100% { transform: rotateX(360deg) rotateY(360deg); }
+        @keyframes orbitSpin1 {
+            from {
+                transform: rotateZ(0deg) rotateX(60deg) rotateY(0deg);
+            }
+            to {
+                transform: rotateZ(360deg) rotateX(60deg) rotateY(0deg);
+            }
         }
 
-        /* 随机粒子生成 */
-        .random-particle {
+        @keyframes orbitSpin2 {
+            from {
+                transform: scale(0.74) rotateZ(360deg) rotateX(-55deg) rotateY(20deg);
+            }
+            to {
+                transform: scale(0.74) rotateZ(0deg) rotateX(-55deg) rotateY(20deg);
+            }
+        }
+
+        @keyframes orbitSpin3 {
+            from {
+                transform: scale(0.46) rotateZ(0deg) rotateX(70deg) rotateY(-40deg);
+            }
+            to {
+                transform: scale(0.46) rotateZ(360deg) rotateX(70deg) rotateY(-40deg);
+            }
+        }
+
+        .orbit-node {
             position: absolute;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.6);
-            width: 10px;
-            height: 10px;
-            animation: randomMovement 10s infinite linear;
+            background: radial-gradient(circle, #fff, rgba(255, 255, 255, 0.1));
+            box-shadow:
+                0 0 10px rgba(0, 255, 255, 1),
+                0 0 24px rgba(255, 0, 255, 0.9);
         }
 
-        @keyframes randomMovement {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(1000px, 1000px);
-            }
-        }
-
-        /* 复杂3D背景 */
-        .background-3d {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: transparent;
-            animation: rotateBackground 60s linear infinite;
-            z-index: -2;
-        }
-
-        @keyframes rotateBackground {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
-
-        /* 滚动文本效果 */
-        .scroll-text {
-            position: absolute;
-            top: 80%;
+        .orbit-node.n1 {
+            top: 2%;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 2em;
-            color: #fff;
-            animation: scrollText 20s linear infinite;
         }
 
-        @keyframes scrollText {
-            0% { transform: translateX(-50%); }
-            100% { transform: translateX(-150%); }
+        .orbit-node.n2 {
+            bottom: 4%;
+            left: 16%;
         }
 
-        /* 超炫光效 */
-        .glow-effect {
+        .orbit-node.n3 {
+            top: 36%;
+            right: 4%;
+        }
+
+        .orbit-core {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 500px;
-            height: 500px;
+            width: 96px;
+            height: 96px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 100px rgba(255, 0, 255, 1);
-            animation: pulseGlow 3s infinite alternate;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background:
+                radial-gradient(circle at 30% 30%, #ffffff, rgba(255, 255, 255, 0.1)),
+                radial-gradient(circle at 70% 70%, rgba(255, 0, 200, 0.8), transparent 60%),
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.8), transparent 60%);
+            box-shadow:
+                0 0 16px rgba(255, 255, 255, 0.8),
+                0 0 42px rgba(255, 0, 220, 0.95),
+                0 0 58px rgba(0, 255, 255, 0.95);
+            animation: orbitCorePulse 3.6s ease-in-out infinite;
         }
 
-        @keyframes pulseGlow {
+        @keyframes orbitCorePulse {
             0% {
-                transform: scale(1);
-                box-shadow: 0 0 100px rgba(255, 0, 255, 1);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.12);
             }
             100% {
-                transform: scale(1.5);
-                box-shadow: 0 0 300px rgba(255, 0, 255, 1);
+                transform: translate(-50%, -50%) scale(1);
             }
         }
 
-        /* 更多动态元素 */
-        .dynamic-text {
+        /* ===================================
+           LOWER HUD PANEL (控制面板)
+        ==================================== */
+
+        .hud {
             position: absolute;
-            top: 60%;
             left: 50%;
-            font-size: 3em;
-            font-weight: bold;
-            text-align: center;
-            color: #fff;
-            animation: textAnimation 10s infinite alternate;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: min(1200px, 100%);
+            padding: 22px 28px 24px;
+            backdrop-filter: blur(18px);
+            background: linear-gradient(
+                to top,
+                rgba(5, 5, 15, 0.98),
+                rgba(5, 5, 24, 0.84),
+                rgba(5, 5, 24, 0.1)
+            );
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 -6px 22px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(0, 255, 255, 0.18);
+            display: grid;
+            grid-template-columns: 2.2fr 1.4fr 1.4fr;
+            gap: 18px;
+            color: #d8e6ff;
+            pointer-events: auto;
         }
 
-        @keyframes textAnimation {
-            0% { opacity: 0; }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0; transform: scale(1); }
+        .hud-block {
+            position: relative;
+            padding: 10px 12px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(160, 200, 255, 0.16);
+            background: linear-gradient(
+                135deg,
+                rgba(15, 20, 40, 0.95),
+                rgba(10, 10, 24, 0.7)
+            );
+            box-shadow:
+                0 0 18px rgba(0, 0, 0, 0.9),
+                0 0 18px rgba(0, 200, 255, 0.12);
+            overflow: hidden;
+        }
+
+        .hud-block::before {
+            /* 内部扫描线 */
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.06) 0px,
+                rgba(255, 255, 255, 0.06) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            opacity: 0.45;
+            mix-blend-mode: soft-light;
+            pointer-events: none;
+        }
+
+        .hud-block::after {
+            /* 轻微高光 */
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at 0% 0%,
+                rgba(255, 255, 255, 0.22),
+                transparent 55%
+            );
+            mix-blend-mode: overlay;
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        .hud-title {
+            font-size: 0.8rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #9fb8ff;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-title-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00ffc6, rgba(0, 255, 198, 0.05));
+            box-shadow:
+                0 0 8px rgba(0, 255, 198, 0.9),
+                0 0 18px rgba(0, 180, 255, 0.9);
+            animation: hudDotPulse 1.4s ease-in-out infinite alternate;
+        }
+
+        @keyframes hudDotPulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .hud-main-text {
+            font-size: 0.92rem;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            opacity: 0.92;
+        }
+
+        .hud-secondary {
+            font-size: 0.75rem;
+            color: #8ea3d8;
+            opacity: 0.9;
+        }
+
+        /* 轨道参数模拟列表 */
+
+        .hud-orbit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .hud-pill {
+            position: relative;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 0.72rem;
+            background: radial-gradient(
+                circle at 0% 50%,
+                rgba(0, 255, 200, 0.25),
+                rgba(20, 26, 48, 0.95)
+            );
+            border: 1px solid rgba(120, 200, 255, 0.35);
+            color: #e5f5ff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+        }
+
+        .hud-pill-label {
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.68em;
+            opacity: 0.8;
+        }
+
+        .hud-pill-value {
+            font-weight: 600;
+            font-size: 0.8em;
+        }
+
+        /* 控制开关 */
+
+        .switch-row {
+            margin-top: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 7px;
+            border-radius: 999px;
+            border: 1px solid rgba(150, 200, 255, 0.4);
+            background: rgba(8, 14, 30, 0.94);
+            cursor: pointer;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #d4e5ff;
+        }
+
+        .switch-toggle {
+            width: 22px;
+            height: 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(180, 220, 255, 0.55);
+            position: relative;
+            background: rgba(4, 8, 18, 0.95);
+        }
+
+        .switch-thumb {
+            position: absolute;
+            top: 1px;
+            left: 2px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00ffd0, rgba(0, 255, 160, 0.1));
+            box-shadow:
+                0 0 8px rgba(0, 255, 200, 0.8),
+                0 0 18px rgba(0, 200, 255, 0.8);
+            transition: transform 0.25s ease;
+        }
+
+        .switch[data-active="true"] .switch-thumb {
+            transform: translateX(8px);
+        }
+
+        /* 右侧模式状态卡片 */
+
+        .status-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 5px 0 6px;
+        }
+
+        .status-chip {
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            border: 1px solid rgba(0, 255, 200, 0.55);
+            background: radial-gradient(circle at 0% 50%, rgba(0, 255, 200, 0.18), rgba(10, 16, 30, 0.96));
+            color: #e8fff6;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+        }
+
+        .status-chip--danger {
+            border-color: rgba(255, 80, 150, 0.9);
+            background: radial-gradient(circle at 0% 50%, rgba(255, 80, 150, 0.23), rgba(26, 6, 24, 0.96));
+            color: #ffe5f5;
+        }
+
+        .status-chip--ghosted {
+            border-style: dashed;
+            border-color: rgba(160, 200, 255, 0.6);
+            opacity: 0.8;
+        }
+
+        .mini-graph {
+            margin-top: 6px;
+            height: 40px;
+            border-radius: 6px;
+            background:
+                linear-gradient(to right, rgba(0, 255, 200, 0.08), rgba(0, 180, 255, 0.12)),
+                repeating-linear-gradient(
+                    to right,
+                    rgba(255, 255, 255, 0.06) 0px,
+                    rgba(255, 255, 255, 0.06) 1px,
+                    transparent 1px,
+                    transparent 8px
+                );
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mini-graph-wave {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(
+                    to right,
+                    rgba(0, 255, 200, 0.4),
+                    rgba(0, 160, 255, 0.5),
+                    rgba(255, 0, 200, 0.5)
+                );
+            mix-blend-mode: screen;
+            opacity: 0.8;
+            clip-path: polygon(
+                0% 55%,
+                8% 80%,
+                16% 40%,
+                24% 60%,
+                32% 30%,
+                40% 68%,
+                48% 35%,
+                56% 72%,
+                64% 42%,
+                72% 76%,
+                80% 50%,
+                88% 80%,
+                96% 45%,
+                100% 55%,
+                100% 100%,
+                0% 100%
+            );
+            animation: miniGraphSweep 3.2s linear infinite;
+        }
+
+        @keyframes miniGraphSweep {
+            0% {
+                transform: translateX(-40px);
+            }
+            100% {
+                transform: translateX(40px);
+            }
+        }
+
+        .mini-graph-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(
+                    to right,
+                    rgba(255, 255, 255, 0.08) 0px,
+                    rgba(255, 255, 255, 0.08) 1px,
+                    transparent 1px,
+                    transparent 8px
+                ),
+                repeating-linear-gradient(
+                    to top,
+                    rgba(255, 255, 255, 0.06) 0px,
+                    rgba(255, 255, 255, 0.06) 1px,
+                    transparent 1px,
+                    transparent 8px
+                );
+            opacity: 0.45;
+            mix-blend-mode: soft-light;
+        }
+
+        /* CPU / GPU 信息样式 */
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .metric-label {
+            color: #a6c0ff;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.72rem;
+        }
+
+        .metric-value {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .metric-bar-wrapper {
+            margin-top: 3px;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(8, 12, 24, 0.95);
+            overflow: hidden;
+            border: 1px solid rgba(80, 140, 255, 0.45);
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                rgba(0, 255, 200, 0.2),
+                rgba(0, 255, 200, 0.9),
+                rgba(0, 150, 255, 0.95),
+                rgba(255, 0, 200, 0.95)
+            );
+            box-shadow:
+                0 0 12px rgba(0, 255, 200, 0.7),
+                0 0 22px rgba(0, 160, 255, 0.9);
+            transform-origin: left center;
+        }
+
+        /* ===========================
+           FLOATING BADGE / KEY HINT
+        ============================ */
+
+        .key-hint {
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            padding: 8px 11px;
+            border-radius: 999px;
+            background: rgba(4, 10, 24, 0.88);
+            border: 1px solid rgba(160, 200, 255, 0.65);
+            box-shadow:
+                0 0 12px rgba(0, 0, 0, 0.9),
+                0 0 18px rgba(0, 255, 255, 0.25);
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            pointer-events: auto;
+            cursor: default;
+        }
+
+        .key {
+            min-width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1px solid rgba(200, 220, 255, 0.7);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            box-shadow:
+                inset 0 0 4px rgba(255, 255, 255, 0.3),
+                0 0 6px rgba(0, 255, 255, 0.5);
+            background: radial-gradient(circle at 30% 30%, #fff, rgba(255, 255, 255, 0.06));
+        }
+
+        .key-hint span {
+            opacity: 0.9;
+        }
+
+        /* ===========================
+           FLOOR GRID (霓虹地板网格)
+        ============================ */
+
+        .floor-grid-wrapper {
+            position: absolute;
+            inset: auto 0 0;
+            height: 220px;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floor-grid {
+            position: absolute;
+            left: 50%;
+            bottom: -120px;
+            width: 220%;
+            height: 380px;
+            transform: translateX(-50%) rotateX(72deg);
+            transform-origin: 50% 100%;
+            background-image:
+                linear-gradient(
+                    rgba(0, 255, 200, 0.8) 1px,
+                    rgba(0, 0, 0, 0.4) 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(0, 255, 200, 0.8) 1px,
+                    rgba(0, 0, 0, 0.4) 1px
+                );
+            background-size: 100% 22px, 44px 100%;
+            opacity: 0.4;
+            animation: floorScroll 2.8s linear infinite;
+            box-shadow:
+                0 -10px 60px rgba(0, 255, 200, 0.75),
+                0 -40px 160px rgba(0, 160, 255, 0.85);
+        }
+
+        @keyframes floorScroll {
+            0% {
+                background-position-y: 0px;
+            }
+            100% {
+                background-position-y: 22px;
+            }
+        }
+
+        /* ===========================
+           CANVAS LAYERS
+        ============================ */
+
+        #starfield,
+        #warpfield {
+            position: absolute;
+            inset: 0;
+        }
+
+        #starfield {
+            opacity: 0.75;
+        }
+
+        #warpfield {
+            opacity: 0.95;
+            mix-blend-mode: screen;
+        }
+
+        /* ===========================
+           MODE LABEL / BADGE
+        ============================ */
+
+        .mode-label {
+            position: absolute;
+            left: 20px;
+            top: 18px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(4, 10, 24, 0.9);
+            border: 1px solid rgba(0, 255, 200, 0.7);
+            color: #e5fff9;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            box-shadow:
+                0 0 12px rgba(0, 0, 0, 0.9),
+                0 0 18px rgba(0, 255, 200, 0.25);
+        }
+
+        .mode-label-main {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mode-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00ffda, rgba(0, 255, 160, 0.05));
+            box-shadow:
+                0 0 10px rgba(0, 255, 200, 1),
+                0 0 24px rgba(0, 160, 255, 1);
+            animation: modeDotPulse 1.2s ease-in-out infinite alternate;
+        }
+
+        @keyframes modeDotPulse {
+            0% {
+                transform: scale(0.75);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        .mode-label-sub {
+            font-size: 0.7rem;
+            color: #a6dff9;
+            opacity: 0.9;
+        }
+
+        /* ===========================
+           GLITCH TEXT DECORATION
+        ============================ */
+
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0.7;
+            clip-path: polygon(0 0, 100% 0, 100% 40%, 0 60%);
+        }
+
+        .glitch::before {
+            transform: translate(-2px, 0);
+            color: #ff00c8;
+            mix-blend-mode: screen;
+            animation: glitchShift1 1.2s infinite;
+        }
+
+        .glitch::after {
+            transform: translate(2px, 0);
+            color: #00f0ff;
+            mix-blend-mode: screen;
+            animation: glitchShift2 1.4s infinite;
+        }
+
+        @keyframes glitchShift1 {
+            0% {
+                transform: translate(-1px, 0);
+            }
+            30% {
+                transform: translate(1px, 0);
+            }
+            60% {
+                transform: translate(-3px, 0);
+            }
+            100% {
+                transform: translate(-1px, 0);
+            }
+        }
+
+        @keyframes glitchShift2 {
+            0% {
+                transform: translate(1px, 0);
+            }
+            25% {
+                transform: translate(-1px, 0);
+            }
+            55% {
+                transform: translate(3px, 0);
+            }
+            100% {
+                transform: translate(1px, 0);
+            }
+        }
+
+        /* ===========================
+           RESPONSIVE TWEAKS
+        ============================ */
+
+        @media (max-width: 900px) {
+            .main-title {
+                font-size: 2.4rem;
+                letter-spacing: 0.12em;
+            }
+
+            .subtitle {
+                letter-spacing: 0.16em;
+            }
+
+            .orbital-system {
+                transform: scale(0.8);
+            }
+
+            .hud {
+                grid-template-columns: 1fr;
+                row-gap: 12px;
+                bottom: 0;
+            }
+
+            .floor-grid-wrapper {
+                height: 180px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-title {
+                font-size: 1.8rem;
+                letter-spacing: 0.08em;
+            }
+
+            .subtitle {
+                font-size: 0.75rem;
+            }
+
+            .orbital-system {
+                transform: scale(0.62);
+            }
+
+            .key-hint {
+                display: none;
+            }
+
+            .mode-label {
+                left: 50%;
+                transform: translateX(-50%);
+                top: 12px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="background"></div>
+<div id="root">
 
-    <!-- 中央标题 -->
-    <div class="title">宇宙超级无敌炫酷动态页面</div>
-
-    <!-- 旋转圆环 -->
-    <div class="circle"></div>
-
-    <!-- 3D立方体 -->
-    <div class="cube">
-        <div class="front"></div>
-        <div class="back"></div>
-        <div class="left"></div>
-        <div class="right"></div>
-        <div class="top"></div>
-        <div class="bottom"></div>
+    <!-- 背景星云 & Canvas 星场 / Warp 场 -->
+    <div class="layer layer-0">
+        <div class="nebula"></div>
+        <canvas id="starfield"></canvas>
+        <canvas id="warpfield"></canvas>
     </div>
 
-    <!-- 动态粒子 -->
-    <div class="random-particle"></div>
+    <!-- 中央 3D 轨道系统 + 标题 -->
+    <div class="layer layer-2 center-stage" id="center-stage">
+        <div class="main-title glitch" data-text="UNIVERSE · SUPER NOVA">
+            UNIVERSE · SUPER NOVA
+        </div>
+        <div class="subtitle">
+            SATX · COSMIC CONTROL SURFACE
+        </div>
 
-    <!-- 滚动文本 -->
-    <div class="scroll-text">欢迎来到宇宙超级无敌炫酷世界！</div>
+        <div class="orbital-system">
+            <div class="orbit-ring r1">
+                <div class="orbit-node n1"></div>
+                <div class="orbit-node n2"></div>
+            </div>
+            <div class="orbit-ring r2">
+                <div class="orbit-node n3"></div>
+            </div>
+            <div class="orbit-ring r3"></div>
+            <div class="orbit-core"></div>
+        </div>
+    </div>
 
-    <!-- 超炫光效 -->
-    <div class="glow-effect"></div>
+    <!-- 模式标签 -->
+    <div class="layer layer-4">
+        <div class="mode-label" id="modeLabel">
+            <div class="mode-label-main">
+                <div class="mode-dot"></div>
+                <span id="modeLabelMain">MODE · COSMIC IDLE</span>
+            </div>
+            <div class="mode-label-sub" id="modeLabelSub">
+                按 1 / 2 / 3 在不同宇宙模式之间切换
+            </div>
+        </div>
 
-    <!-- 更多动态文字 -->
-    <div class="dynamic-text">炫酷动画动态无限升级！</div>
+        <!-- 键盘提示 Badge -->
+        <div class="key-hint">
+            <span>键盘:</span>
+            <span class="key">1</span>
+            <span class="key">2</span>
+            <span class="key">3</span>
+            <span>·</span>
+            <span>鼠标移动 = 视差</span>
+        </div>
+    </div>
 
-    <!-- 生成粒子 -->
-    <script>
-        function createParticle() {
-            const particle = document.createElement('div');
-            const size = Math.random() * 20 + 10;
-            particle.classList.add('particle');
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            particle.style.left = `${Math.random() * window.innerWidth}px`;
-            particle.style.top = `${Math.random() * window.innerHeight}px`;
-            document.body.appendChild(particle);
+    <!-- HUD 底部控制台 -->
+    <div class="layer layer-5">
+        <div class="hud">
+            <!-- 左侧：轨道与宇宙参数 -->
+            <div class="hud-block">
+                <div class="hud-title">
+                    <div class="hud-title-dot"></div>
+                    ORBITAL PARAMETERS
+                </div>
+                <div class="hud-main-text">
+                    实时模拟宇宙场景中的 <strong>轨道偏心率</strong>、<strong>粒子密度</strong>、
+                    <strong>能量通量</strong> 三类抽象指标。数值会跟随模式切换动态变化，
+                    同时驱动上方星场与 warp 效果。
+                </div>
+                <div class="hud-secondary">
+                    当前展示的是高维虚构指标，与真实物理无关，只为炫技和好看服务。
+                </div>
 
-            setTimeout(() => {
-                particle.remove();
-            }, 8000);
+                <div class="hud-orbit-grid" id="orbitGrid">
+                    <!-- JS 会填充 9 个 hud-pill -->
+                </div>
+
+                <div class="switch-row" id="switchRow">
+                    <!-- 开关由 JS 动态绑定 -->
+                </div>
+            </div>
+
+            <!-- 中间：性能与粒子统计 -->
+            <div class="hud-block">
+                <div class="hud-title">
+                    <div class="hud-title-dot"></div>
+                    RUNTIME METRICS
+                </div>
+                <div class="hud-main-text">
+                    简单模拟 <strong>CPU</strong> / <strong>GPU</strong> 负载，以及
+                    <strong>Starfield</strong> / <strong>Warpfield</strong> 粒子数量。
+                    数值会随时间轻微抖动，营造“活着”的控制面板感觉。
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">CPU LOAD</div>
+                    <div class="metric-value" id="cpuValue">42%</div>
+                </div>
+                <div class="metric-bar-wrapper">
+                    <div class="metric-bar-fill" id="cpuBar"></div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">GPU LOAD</div>
+                    <div class="metric-value" id="gpuValue">58%</div>
+                </div>
+                <div class="metric-bar-wrapper">
+                    <div class="metric-bar-fill" id="gpuBar"></div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">STARFIELD</div>
+                    <div class="metric-value"><span id="starCount">0</span> px</div>
+                </div>
+                <div class="metric-bar-wrapper">
+                    <div class="metric-bar-fill" id="starBar"></div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">WARPFIELD</div>
+                    <div class="metric-value"><span id="warpCount">0</span> streaks</div>
+                </div>
+                <div class="metric-bar-wrapper">
+                    <div class="metric-bar-fill" id="warpBar"></div>
+                </div>
+            </div>
+
+            <!-- 右侧：模式信息 + 迷你图 -->
+            <div class="hud-block">
+                <div class="hud-title">
+                    <div class="hud-title-dot"></div>
+                    MODE MATRIX
+                </div>
+
+                <div class="hud-main-text" id="modeDescription">
+                    当前为 <strong>Cosmic Idle</strong> 模式：粒子整体速度较低，warp 轨迹收束，
+                    适合安静展示。按下 2 切换到 <strong>Hyperspace</strong>，整体速度暴涨；
+                    按下 3 进入 <strong>Singularity</strong>，warp 朝中心塌缩，标题与轨道系统会更激进。
+                </div>
+
+                <div class="status-chip-row">
+                    <div class="status-chip" id="chipIdle">IDLE</div>
+                    <div class="status-chip" id="chipHyper">HYPERSPACE</div>
+                    <div class="status-chip status-chip--danger" id="chipSing">SINGULARITY</div>
+                    <div class="status-chip status-chip--ghosted">
+                        MOUSE PARALLAX
+                    </div>
+                </div>
+
+                <div class="mini-graph">
+                    <div class="mini-graph-wave"></div>
+                    <div class="mini-graph-grid"></div>
+                </div>
+
+                <div class="hud-secondary" style="margin-top: 7px;">
+                    小提示：可以直接把整个文件丢到 GitHub Pages，当作项目主页的背景舞台；
+                    后续你要加按钮、路由、项目列表，随便往这个 HUD 上面再堆 UI 就行。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部 3D 霓虹网格 -->
+    <div class="layer layer-1 floor-grid-wrapper">
+        <div class="floor-grid"></div>
+    </div>
+
+</div>
+
+<!-- ==========================================
+     JAVASCRIPT · STARFIELD + WARP + INTERACTION
+========================================== -->
+<script>
+    // =========================
+    // 工具函数
+    // =========================
+    function randRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function lerp(a, b, t) {
+        return a + (b - a) * t;
+    }
+
+    function clamp(value, min, max) {
+        return value < min ? min : value > max ? max : value;
+    }
+
+    // =========================
+    // 视口 & Canvas 初始化
+    // =========================
+
+    const starCanvas = document.getElementById("starfield");
+    const warpCanvas = document.getElementById("warpfield");
+    const starCtx = starCanvas.getContext("2d");
+    const warpCtx = warpCanvas.getContext("2d");
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let devicePixelRatio = window.devicePixelRatio || 1;
+
+    function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        const ratio = devicePixelRatio;
+
+        starCanvas.width = width * ratio;
+        starCanvas.height = height * ratio;
+        starCanvas.style.width = width + "px";
+        starCanvas.style.height = height + "px";
+        starCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+        warpCanvas.width = width * ratio;
+        warpCanvas.height = height * ratio;
+        warpCanvas.style.width = width + "px";
+        warpCanvas.style.height = height + "px";
+        warpCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    // =========================
+    // Starfield 粒子系统
+    // =========================
+
+    const STAR_COUNT_BASE = 260;
+    let starList = [];
+    let starCount = STAR_COUNT_BASE;
+
+    function initStars() {
+        starList = [];
+        starCount = Math.floor(STAR_COUNT_BASE * (width * height) / (1920 * 1080) * 0.85);
+        starCount = clamp(starCount, 160, 720);
+
+        for (let i = 0; i < starCount; i++) {
+            starList.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                z: randRange(0.15, 1),
+                size: randRange(0.4, 1.5),
+                twinkleOffset: Math.random() * Math.PI * 2
+            });
+        }
+        updateMetricsStarCount();
+    }
+
+    initStars();
+
+    // =========================
+    // Warpfield 粒子系统
+    // =========================
+
+    const WARP_COUNT_BASE = 140;
+    let warpList = [];
+    let warpCount = WARP_COUNT_BASE;
+
+    function initWarp() {
+        warpList = [];
+        warpCount = Math.floor(WARP_COUNT_BASE * (width * height) / (1920 * 1080) * 0.9);
+        warpCount = clamp(warpCount, 60, 340);
+
+        for (let i = 0; i < warpCount; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.random() * (Math.min(width, height) * 0.6);
+            warpList.push({
+                x: width / 2 + Math.cos(angle) * radius,
+                y: height / 2 + Math.sin(angle) * radius,
+                vx: 0,
+                vy: 0,
+                speed: randRange(0.4, 2.4),
+                life: randRange(0.3, 1.0),
+                maxLife: randRange(0.6, 1.6),
+                hue: randRange(180, 330)
+            });
+        }
+        updateMetricsWarpCount();
+    }
+
+    initWarp();
+
+    // =========================
+    // 模式控制
+    // =========================
+
+    const MODE_IDLE = 0;
+    const MODE_HYPER = 1;
+    const MODE_SING = 2;
+
+    let currentMode = MODE_IDLE;
+
+    const modeLabelMain = document.getElementById("modeLabelMain");
+    const modeLabelSub = document.getElementById("modeLabelSub");
+    const modeDescription = document.getElementById("modeDescription");
+
+    const chipIdle = document.getElementById("chipIdle");
+    const chipHyper = document.getElementById("chipHyper");
+    const chipSing = document.getElementById("chipSing");
+
+    function setMode(mode) {
+        currentMode = mode;
+        chipIdle.style.opacity = "0.35";
+        chipHyper.style.opacity = "0.35";
+        chipSing.style.opacity = "0.35";
+
+        switch (mode) {
+            case MODE_IDLE:
+                chipIdle.style.opacity = "1";
+                modeLabelMain.textContent = "MODE · COSMIC IDLE";
+                modeLabelSub.textContent = "轻缓流动的星场，warp 收敛，适合安静展示。按 2 进入 Hyperspace。";
+                modeDescription.innerHTML =
+                    "当前为 <strong>Cosmic Idle</strong> 模式：粒子整体速度较低，" +
+                    "warp 轨迹收束在中等范围，星星闪烁频率较低。";
+                break;
+            case MODE_HYPER:
+                chipHyper.style.opacity = "1";
+                modeLabelMain.textContent = "MODE · HYPERSPACE";
+                modeLabelSub.textContent = "warp 强化并明显拉长，星场抖动增强。按 3 进入 Singularity。";
+                modeDescription.innerHTML =
+                    "当前为 <strong>Hyperspace</strong> 模式：warp 粒子会向屏幕外高速发散，" +
+                    "星场轻微缩放抖动，整体动得更凶一点。";
+                break;
+            case MODE_SING:
+                chipSing.style.opacity = "1";
+                modeLabelMain.textContent = "MODE · SINGULARITY";
+                modeLabelSub.textContent = "warp 朝中心塌缩，轨道核心会更高亮，建议搭配人狠话不多放在主页。";
+                modeDescription.innerHTML =
+                    "当前为 <strong>Singularity</strong> 模式：warp 带着拖尾向中心塌缩，" +
+                    "中间的 core 更亮更“爆炸”，整体效果会偏向黑洞风格。";
+                break;
+        }
+    }
+
+    setMode(MODE_IDLE);
+
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "1") setMode(MODE_IDLE);
+        if (e.key === "2") setMode(MODE_HYPER);
+        if (e.key === "3") setMode(MODE_SING);
+    });
+
+    // =========================
+    // HUD：轨道 Pill & 开关
+    // =========================
+
+    const orbitGrid = document.getElementById("orbitGrid");
+    const switchRow = document.getElementById("switchRow");
+
+    const orbitItems = [
+        ["ECC", "0.18"],
+        ["DENS", "1.02"],
+        ["FLUX", "0.87"],
+        ["TEMP", "272K"],
+        ["VEL", "0.42c"],
+        ["PHASE", "72°"],
+        ["NOISE", "0.12"],
+        ["DRIFT", "1.3"],
+        ["PULSE", "0.94"],
+    ];
+
+    orbitItems.forEach(([label, value]) => {
+        const pill = document.createElement("div");
+        pill.className = "hud-pill";
+        pill.innerHTML = `
+            <div class="hud-pill-label">${label}</div>
+            <div class="hud-pill-value">${value}</div>
+        `;
+        orbitGrid.appendChild(pill);
+    });
+
+    const switches = [
+        { id: "swStars", label: "STARFIELD", active: true },
+        { id: "swWarp", label: "WARPFIELD", active: true },
+        { id: "swShake", label: "SHAKE", active: true },
+        { id: "swPulse", label: "PULSE CORE", active: true },
+        { id: "swGrid", label: "GRID", active: true },
+    ];
+
+    switches.forEach((s) => {
+        const sw = document.createElement("div");
+        sw.className = "switch";
+        sw.dataset.id = s.id;
+        sw.dataset.active = s.active ? "true" : "false";
+        sw.innerHTML = `
+            <div class="switch-toggle">
+                <div class="switch-thumb"></div>
+            </div>
+            <span>${s.label}</span>
+        `;
+        switchRow.appendChild(sw);
+    });
+
+    let optionStars = true;
+    let optionWarp = true;
+    let optionShake = true;
+    let optionPulse = true;
+    let optionGrid = true;
+
+    switchRow.addEventListener("click", (e) => {
+        const target = e.target.closest(".switch");
+        if (!target) return;
+
+        const id = target.dataset.id;
+        const active = target.dataset.active === "true";
+        const next = !active;
+        target.dataset.active = next ? "true" : "false";
+
+        if (id === "swStars") optionStars = next;
+        if (id === "swWarp") optionWarp = next;
+        if (id === "swShake") optionShake = next;
+        if (id === "swPulse") optionPulse = next;
+        if (id === "swGrid") {
+            optionGrid = next;
+            document.querySelector(".floor-grid-wrapper").style.opacity = next ? "1" : "0";
+        }
+    });
+
+    // =========================
+    // HUD：性能数值模拟
+    // =========================
+
+    const cpuValueEl = document.getElementById("cpuValue");
+    const gpuValueEl = document.getElementById("gpuValue");
+    const cpuBar = document.getElementById("cpuBar");
+    const gpuBar = document.getElementById("gpuBar");
+    const starCountEl = document.getElementById("starCount");
+    const warpCountEl = document.getElementById("warpCount");
+    const starBar = document.getElementById("starBar");
+    const warpBar = document.getElementById("warpBar");
+
+    function updateMetricsStarCount() {
+        starCountEl.textContent = starCount.toString();
+    }
+
+    function updateMetricsWarpCount() {
+        warpCountEl.textContent = warpCount.toString();
+    }
+
+    let cpuFake = 42;
+    let gpuFake = 58;
+
+    function updateMetrics() {
+        // fake CPU / GPU 抖动
+        cpuFake = clamp(cpuFake + randRange(-2, 2), 20, 88);
+        gpuFake = clamp(gpuFake + randRange(-3, 3), 16, 96);
+
+        cpuValueEl.textContent = Math.round(cpuFake) + "%";
+        gpuValueEl.textContent = Math.round(gpuFake) + "%";
+
+        cpuBar.style.transform = "scaleX(" + (cpuFake / 100).toFixed(2) + ")";
+        gpuBar.style.transform = "scaleX(" + (gpuFake / 100).toFixed(2) + ")";
+
+        // star / warp 用实际数量
+        starBar.style.transform = "scaleX(" + clamp(starCount / 800, 0, 1).toFixed(2) + ")";
+        warpBar.style.transform = "scaleX(" + clamp(warpCount / 400, 0, 1).toFixed(2) + ")";
+    }
+
+    setInterval(updateMetrics, 700);
+
+    // =========================
+    // 鼠标视差
+    // =========================
+
+    let mouseX = width / 2;
+    let mouseY = height / 2;
+    let parallaxX = 0;
+    let parallaxY = 0;
+
+    window.addEventListener("mousemove", (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    const centerStage = document.getElementById("center-stage");
+
+    function updateParallax() {
+        const targetX = (mouseX - width / 2) / width;
+        const targetY = (mouseY - height / 2) / height;
+        parallaxX = lerp(parallaxX, targetX, 0.07);
+        parallaxY = lerp(parallaxY, targetY, 0.07);
+
+        const maxShift = 22;
+
+        if (centerStage) {
+            const offsetX = -parallaxX * maxShift;
+            const offsetY = -parallaxY * maxShift;
+            centerStage.style.transform =
+                "translate(" + offsetX + "px, " + offsetY + "px)";
+        }
+    }
+
+    // =========================
+    // 渲染：Starfield
+    // =========================
+
+    let time = 0;
+
+    function renderStars(dt) {
+        if (!optionStars) {
+            starCtx.clearRect(0, 0, width, height);
+            return;
         }
 
-        setInterval(createParticle, 100);
+        starCtx.clearRect(0, 0, width, height);
 
-        function createRandomParticle() {
-            const particle = document.createElement('div');
-            const size = Math.random() * 15 + 5;
-            particle.classList.add('random-particle');
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            particle.style.top = `${Math.random() * window.innerHeight}px`;
-            particle.style.left = `${Math.random() * window.innerWidth}px`;
-            document.body.appendChild(particle);
+        const twinkleSpeed = 2.5;
+        const shakeAmp = optionShake ? 1.5 : 0;
 
-            setTimeout(() => {
-                particle.remove();
-            }, 10000);
+        for (const s of starList) {
+            const tw = (Math.sin(time * twinkleSpeed + s.twinkleOffset) + 1) / 2;
+            const alpha = 0.2 + tw * 0.8;
+            const size = s.size * (0.7 + tw * 0.7);
+
+            let shiftX = 0;
+            let shiftY = 0;
+
+            if (optionShake && currentMode !== MODE_IDLE) {
+                shiftX = Math.sin(time * 1.2 + s.twinkleOffset) * shakeAmp * s.z;
+                shiftY = Math.cos(time * 1.4 + s.twinkleOffset) * shakeAmp * s.z;
+            }
+
+            starCtx.beginPath();
+            starCtx.fillStyle = "rgba(255,255,255," + alpha.toFixed(3) + ")";
+            starCtx.arc(
+                s.x + shiftX * 0.8,
+                s.y + shiftY * 0.8,
+                size,
+                0,
+                Math.PI * 2
+            );
+            starCtx.fill();
+        }
+    }
+
+    // =========================
+    // 渲染：Warpfield
+    // =========================
+
+    function renderWarp(dt) {
+        if (!optionWarp) {
+            warpCtx.clearRect(0, 0, width, height);
+            return;
         }
 
-        setInterval(createRandomParticle, 50);
-    </script>
+        const warpTrailFade = 0.15;
+        warpCtx.fillStyle = "rgba(5,5,16," + warpTrailFade.toFixed(2) + ")";
+        warpCtx.fillRect(0, 0, width, height);
+
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        for (const w of warpList) {
+            w.life += dt;
+
+            if (w.life > w.maxLife) {
+                // reset
+                w.life = 0;
+                const angle = Math.random() * Math.PI * 2;
+                const radius = Math.random() * (Math.min(width, height) * 0.6);
+                w.x = centerX + Math.cos(angle) * radius;
+                w.y = centerY + Math.sin(angle) * radius;
+                w.speed = randRange(0.4, 2.6);
+                w.maxLife = randRange(0.6, 1.6);
+                w.hue = randRange(180, 330);
+            }
+
+            let dirX = 0;
+            let dirY = 0;
+
+            if (currentMode === MODE_IDLE) {
+                // 从中心发散一点点
+                dirX = w.x - centerX;
+                dirY = w.y - centerY;
+            } else if (currentMode === MODE_HYPER) {
+                // 向外炸裂
+                dirX = w.x - centerX;
+                dirY = w.y - centerY;
+            } else if (currentMode === MODE_SING) {
+                // 向内塌缩
+                dirX = centerX - w.x;
+                dirY = centerY - w.y;
+            }
+
+            const len = Math.hypot(dirX, dirY) || 1;
+            dirX /= len;
+            dirY /= len;
+
+            let speedMul = 1;
+            if (currentMode === MODE_IDLE) speedMul = 1.0;
+            if (currentMode === MODE_HYPER) speedMul = 4.0;
+            if (currentMode === MODE_SING) speedMul = 3.2;
+
+            w.vx = dirX * w.speed * speedMul;
+            w.vy = dirY * w.speed * speedMul;
+
+            const px = w.x;
+            const py = w.y;
+            w.x += w.vx * dt * 60;
+            w.y += w.vy * dt * 60;
+
+            const alpha = 0.4 + (w.life / w.maxLife) * 0.6;
+            const sat = currentMode === MODE_SING ? 95 : 70;
+            const light = 55 + (w.life / w.maxLife) * 25;
+
+            warpCtx.beginPath();
+            warpCtx.strokeStyle =
+                "hsla(" +
+                w.hue.toFixed(1) +
+                ", " +
+                sat +
+                "%, " +
+                light.toFixed(1) +
+                "%, " +
+                alpha.toFixed(2) +
+                ")";
+            warpCtx.lineWidth = 2.4;
+            warpCtx.moveTo(px, py);
+            warpCtx.lineTo(w.x, w.y);
+            warpCtx.stroke();
+        }
+    }
+
+    // =========================
+    // 主循环
+    // =========================
+
+    let lastTime = performance.now();
+
+    function loop(now) {
+        const dt = Math.min((now - lastTime) / 1000, 0.06);
+        lastTime = now;
+        time += dt;
+
+        updateParallax();
+        renderStars(dt);
+        renderWarp(dt);
+
+        requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+
+    // =========================
+    // 初始指标校准
+    // =========================
+    updateMetricsStarCount();
+    updateMetricsWarpCount();
+
+</script>
 </body>
 </html>
