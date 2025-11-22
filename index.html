@@ -3,180 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>超级炫酷网页</title>
+    <title>超级炫酷动态页面</title>
     <style>
-        * {
+        /* 全局样式 */
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            height: 100%;
+            overflow: hidden;
+            background-color: #111;
+            font-family: 'Arial', sans-serif;
         }
 
-        /* 背景粒子效果 */
-        #particles-js {
+        /* 背景渐变动画 */
+        .background {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0; /* 粒子背景放在最底层 */
+            background: radial-gradient(circle, #0a0a0a, #000000);
+            animation: gradient 10s ease-in-out infinite;
+            z-index: -1;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            position: relative;
-            flex-direction: column;
+        @keyframes gradient {
+            0% {
+                background: radial-gradient(circle, #0a0a0a, #000000);
+            }
+            50% {
+                background: radial-gradient(circle, #ff007f, #000000);
+            }
+            100% {
+                background: radial-gradient(circle, #0a0a0a, #000000);
+            }
+        }
+
+        /* 中央标题 */
+        .title {
+            color: #fff;
+            font-size: 5em;
             text-align: center;
-
-            /* 玻璃拟态效果 */
-            background: linear-gradient(45deg, #ff6347, #1e90ff, #32cd32);
-            background-size: 400% 400%;
-            animation: gradientChange 10s ease infinite;
-            background-color: #000; /* 设置一个基础背景色 */
-
-            /* 整个页面应用玻璃拟态 */
-            backdrop-filter: blur(15px); /* 背景模糊 */
-            background-color: rgba(255, 255, 255, 0.1); /* 半透明背景 */
-            padding: 0; /* 去掉内边距，让整个页面背景都覆盖 */
-            -webkit-backdrop-filter: blur(15px); /* 兼容Safari */
+            animation: fadeIn 3s ease-in-out;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
-        h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-            opacity: 0;
-            animation: textAnimate 5s infinite alternate;
-            animation-delay: 1s;
-            z-index: 2; /* 确保标题显示在最前 */
-            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8); /* 为标题添加光泽效果 */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
-        /* 玻璃拟态效果的内容容器 */
-        .container {
-            background: rgba(255, 255, 255, 0.15); /* 半透明背景 */
-            border-radius: 15px;
-            padding: 30px;
-            backdrop-filter: blur(10px); /* 背景模糊 */
-            border: 1px solid rgba(255, 255, 255, 0.2); /* 边框 */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 阴影 */
-            z-index: 2; /* 内容在最前 */
-            transition: all 0.3s ease-in-out;
+        /* 动态粒子 */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            opacity: 0.8;
+            animation: moveParticle 8s infinite;
         }
 
-        @keyframes textAnimate {
+        @keyframes moveParticle {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(300px, -300px); }
+            50% { transform: translate(600px, 0); }
+            75% { transform: translate(300px, 300px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* 旋转 3D 圆环 */
+        .circle {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border: 4px solid #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: rotateCircle 10s linear infinite;
+        }
+
+        @keyframes rotateCircle {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 3D立方体 */
+        .cube {
+            width: 200px;
+            height: 200px;
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            animation: rotateCube 15s infinite linear;
+            transform-style: preserve-3d;
+        }
+
+        .cube div {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid #fff;
+        }
+
+        .front  { transform: translateZ(100px); background: rgba(255, 0, 0, 0.5); }
+        .back   { transform: rotateY(180deg) translateZ(100px); background: rgba(0, 255, 0, 0.5); }
+        .left   { transform: rotateY(-90deg) translateZ(100px); background: rgba(0, 0, 255, 0.5); }
+        .right  { transform: rotateY(90deg) translateZ(100px); background: rgba(255, 255, 0, 0.5); }
+        .top    { transform: rotateX(90deg) translateZ(100px); background: rgba(255, 0, 255, 0.5); }
+        .bottom { transform: rotateX(-90deg) translateZ(100px); background: rgba(0, 255, 255, 0.5); }
+
+        @keyframes rotateCube {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        /* 随机粒子生成 */
+        .random-particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6);
+            width: 10px;
+            height: 10px;
+            animation: randomMovement 10s infinite linear;
+        }
+
+        @keyframes randomMovement {
             0% {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            50% {
-                opacity: 1;
-                transform: translateY(0);
+                transform: translate(0, 0);
             }
             100% {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-        }
-
-        @keyframes gradientChange {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
+                transform: translate(1000px, 1000px);
             }
         }
     </style>
 </head>
 <body>
-    <div id="particles-js"></div>
-    <h1>欢迎来到satx社区</h1>
+    <div class="background"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <!-- 中央标题 -->
+    <div class="title">宇宙超级无敌炫酷动态页面</div>
+
+    <!-- 旋转圆环 -->
+    <div class="circle"></div>
+
+    <!-- 立方体 -->
+    <div class="cube">
+        <div class="front"></div>
+        <div class="back"></div>
+        <div class="left"></div>
+        <div class="right"></div>
+        <div class="top"></div>
+        <div class="bottom"></div>
+    </div>
+
+    <!-- 随机粒子生成 -->
     <script>
-        // 初始化粒子背景
-        particlesJS("particles-js", {
-            particles: {
-                number: {
-                    value: 60,  // 设置粒子数量为 60
-                    density: {
-                        enable: true,
-                        value_area: 800
-                    }
-                },
-                color: {
-                    value: "#ffffff",  // 粒子初始颜色设置为白色
-                    animation: {
-                        enable: true,   // 启用粒子变色
-                        speed: 3,       // 变色速度
-                        sync: false     // 每个粒子变色不同步
-                    }
-                },
-                shape: {
-                    type: "circle",  // 粒子为圆形
-                    stroke: {
-                        width: 0,
-                        color: "#000000"
-                    }
-                },
-                opacity: {
-                    value: 1,  // 固定透明度为 1（完全不透明）
-                    random: false,  // 透明度不随机变化
-                    anim: {
-                        enable: false,  // 不启用透明度动画
-                    }
-                },
-                size: {
-                    value: 4,  // 粒子尺寸设置为更小
-                    random: false,  // 粒子大小不随机变化
-                    anim: {
-                        enable: false,    // 不启用大小变化
-                    }
-                },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: "#ffffff",  // 连线颜色为白色
-                    opacity: 0.4,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 3,  // 适中的粒子移动速度
-                    direction: "none",  // 粒子移动方向为随机
-                    random: true,  // 粒子随机移动
-                    straight: false,
-                    out_mode: "out",  // 粒子从屏幕外消失
-                    bounce: false
-                }
-            },
-            interactivity: {
-                events: {
-                    onhover: {
-                        enable: true,
-                        mode: "repulse"  // 鼠标悬停时粒子反弹
-                    },
-                    onclick: {
-                        enable: true,
-                        mode: "push"  // 点击时新增粒子
-                    }
-                }
-            },
-            retina_detect: true
-        });
+        // 创建随机粒子
+        function createRandomParticle() {
+            const particle = document.createElement('div');
+            const size = Math.random() * 15 + 5;
+            particle.classList.add('random-particle');
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.top = `${Math.random() * window.innerHeight}px`;
+            particle.style.left = `${Math.random() * window.innerWidth}px`;
+            document.body.appendChild(particle);
 
-        // 页面加载时文字逐步显示
-        window.onload = function () {
-            document.querySelector("h1").style.animationPlayState = "running";
-        };
+            // 设置粒子销毁
+            setTimeout(() => {
+                particle.remove();
+            }, 10000);
+        }
+
+        // 每50毫秒生成一个随机粒子
+        setInterval(createRandomParticle, 50);
+
+        // 创建动态粒子
+        function createParticle() {
+            const particle = document.createElement('div');
+            const size = Math.random() * 20 + 10;
+            particle.classList.add('particle');
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * window.innerWidth}px`;
+            particle.style.top = `${Math.random() * window.innerHeight}px`;
+            document.body.appendChild(particle);
+
+            // 设置粒子销毁
+            setTimeout(() => {
+                particle.remove();
+            }, 8000);
+        }
+
+        setInterval(createParticle, 100);
     </script>
 </body>
 </html>
